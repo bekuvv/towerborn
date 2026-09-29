@@ -1,0 +1,27 @@
+<!doctype html><html lang="ru"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080a0f"><title>Towerborn — The Last Floor</title><link rel="stylesheet" href="style.css"></head>
+<body><main id="app">
+<section id="home" class="screen active"><div class="brand"><div class="logo">⚔</div><div class="eyebrow">THE LAST FLOOR</div><h1>TOWERBORN</h1><p>Поднимись как можно выше.</p></div>
+<div class="actions"><button class="primary" onclick="startRun()">НАЧАТЬ ЗАБЕГ</button><button onclick="show('character')">ПЕРСОНАЖ</button><button onclick="show('inventory')">ИНВЕНТАРЬ</button></div><div id="user" class="muted"></div></section>
+
+<section id="map" class="screen"><header><button onclick="show('home')">←</button><div><small>БАШНЯ</small><b>ЭТАЖ <span id="floor">1</span></b></div></header>
+<div class="panel"><h2>Выбери путь</h2><p class="muted">Каждый выбор меняет твой забег.</p><div class="rooms">
+<button onclick="room('fight')">⚔️<b>Бой</b><small>Опасность и награда</small></button>
+<button onclick="room('treasure')">💰<b>Сокровище</b><small>Предмет без боя</small></button>
+<button onclick="room('event')">❓<b>Событие</b><small>Риск или удача</small></button></div></div></section>
+
+<section id="battle" class="screen"><header><div><small>ЭТАЖ <span id="bfloor">1</span></small><b>СТРАЖ БАШНИ</b></div><span>♥ <i id="php">500</i></span></header>
+<div class="panel center"><div class="enemy">👹</div><h2>Страж башни</h2><div class="bar"><div id="ehbar"></div></div><small id="ehp">350 / 350 HP</small><div class="intent" id="intent">⚔️ Обычная атака: 35–50</div></div>
+<div class="panel center"><div class="hero">⚔️</div><h2>Воин</h2><div class="bar player"><div id="phbar"></div></div><small id="hp">500 / 500 HP</small><p>Энергия: <b id="energy">100</b>/100</p></div>
+<div id="log" class="log">Выбери действие.</div><div class="combat">
+<button onclick="act('attack')">⚔️ Атака<small>+10 энергии</small></button>
+<button onclick="act('defend')">🛡️ Защита<small>+15 энергии</small></button>
+<button onclick="act('sunder')">💥 Сокрушение<small>25 энергии</small></button>
+<button onclick="act('steel')">🛡️ Стальная воля<small>30 энергии</small></button></div></section>
+
+<section id="reward" class="screen center"><div class="panel"><div class="logo">✦</div><div class="eyebrow">НАГРАДА</div><h2>Путь продолжается</h2><p id="rewardText" class="muted"></p><button class="primary" onclick="continueRun()">ПРОДОЛЖИТЬ</button></div></section>
+
+<section id="character" class="screen"><header><button onclick="show('home')">←</button><b>ПЕРСОНАЖ</b><span></span></header><div class="panel center"><div class="hero big">⚔️</div><h2>Воин</h2><p>Уровень <b>1</b></p><hr><p>Атака <b>50</b></p><p>Защита <b>20</b></p><p>Макс. HP <b>500</b></p></div></section>
+<section id="inventory" class="screen"><header><button onclick="show('home')">←</button><b>ИНВЕНТАРЬ</b><span></span></header><div class="panel"><div class="item">⚔️ <span><b>Клык Пустоты</b><small>+15 ATK · +50% урона ниже 30% HP</small></span></div><div class="item">🛡️ <span><b>Панцирь Титана</b><small>+20 DEF · защита даёт Counter</small></span></div><div class="item">❔ <span><b>Неизвестный предмет</b><small>Откроется в башне</small></span></div></div></section>
+</main><script src="https://telegram.org/js/telegram-web-app.js"></script><script src="app.js"></script></body></html>
