@@ -1,48 +1,30 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>TOWERBORN — THE LAST FLOOR</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090a0f">
+<title>Towerborn — The Last Floor</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="app">
-<header class="top"><div><small>THE LAST FLOOR</small><h1>TOWER<span>BORN</span></h1></div><div class="player">● WARRIOR</div></header>
-<main>
-<section id="home" class="screen active">
-<div class="hero"><div class="tower"></div><div class="heroText"><label>FLOOR 01</label><h2>THE TOWER<br><i>AWAITS.</i></h2><p>Climb higher. Build your legend.<br>Survive the last floor.</p></div></div>
-<div class="stats"><div><b>01</b><small>FLOOR</small></div><div><b>500</b><small>HP</small></div><div><b>50</b><small>ATK</small></div><div><b>20</b><small>DEF</small></div></div>
-<button class="primary" onclick="show('map')">ENTER THE TOWER <b>→</b></button>
-<div class="twobtn"><button onclick="show('character')">CHARACTER</button><button onclick="show('inventory')">INVENTORY</button></div>
-</section>
+<div class="grain"></div>
+<div id="app">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">✦</span><div><b>TOWERBORN</b><small>THE LAST FLOOR</small></div></div>
+    <div class="top-actions"><button class="icon-btn" data-screen="character">♙</button><button class="icon-btn" data-screen="inventory">◇</button></div>
+  </header>
 
-<section id="map" class="screen">
-<div class="head"><div><small>ASCENSION</small><h2>CHOOSE YOUR PATH</h2></div><strong>01 <em>/ 10</em></strong></div>
-<div class="map"><div class="current">01<small>YOU</small></div><div class="line"></div>
-<div class="nodes"><button onclick="combat()"><b>⚔</b>FIGHT<small>Guardian</small></button><button onclick="reward()"><b>◇</b>TREASURE<small>Unknown</small></button><button onclick="eventScreen()"><b>?</b>EVENT<small>Fate</small></button></div>
-<div class="next">02 — 03 — 04 — 05<br><span>— BOSS —</span></div></div>
-<p class="hint">Every choice changes your run. There is no safe path.</p>
-</section>
+  <main id="screen"></main>
 
-<section id="combat" class="screen">
-<div class="combatHead"><button onclick="show('map')">← MAP</button><span>FLOOR 01</span><span>COMBAT</span></div>
-<div class="arena"><div class="intent">INTENT &nbsp; <b id="intent">ATTACK · 45</b></div>
-<div class="enemy"><div class="rune">✦</div><h3>TOWER GUARDIAN</h3><div class="bar"><i id="ehp"></i></div><small><span id="ehpt">350</span> / 350 HP</small></div>
-<div class="vs">VS</div><div class="heroUnit"><div class="sword">⚔</div><h3>WARRIOR</h3><div class="bar"><i id="php"></i></div><small><span id="phpt">500</span> / 500 HP</small></div></div>
-<div class="energy">ENERGY <div><span id="energybar"></span></div><b id="energy">40 / 100</b></div>
-<div class="actions"><button onclick="attack()">ATTACK<small>+10 E</small></button><button onclick="defend()">DEFEND<small>+15 E</small></button><button onclick="skill(90,25,'SUNDER')">SUNDER<small>25 E</small></button><button onclick="skill(0,30,'STEEL WILL')">STEEL WILL<small>30 E</small></button></div>
-<p id="log" class="log">The Guardian watches your every move.</p>
-</section>
-
-<section id="reward" class="screen center"><div class="symbol">◇</div><small>VICTORY</small><h2>THE GUARDIAN FALLS</h2><p>You found something in the darkness.</p><div class="item"><b>☽</b><div><small>RARE · WEAPON</small><h3>FANG OF THE VOID</h3><p>+15 ATK · +50% damage below 30% HP</p></div></div><button class="primary" onclick="show('map')">CONTINUE ASCENSION <b>→</b></button></section>
-
-<section id="event" class="screen center"><div class="symbol">?</div><small>AN UNKNOWN PRESENCE</small><h2>THE WHISPERING DOOR</h2><p>Something behind the door knows your name. Open it?</p><div class="twobtn"><button onclick="reward()">OPEN THE DOOR</button><button onclick="show('map')">WALK AWAY</button></div></section>
-
-<section id="character" class="screen"><div class="head"><div><small>WARRIOR</small><h2>CHARACTER</h2></div><strong>LVL 01</strong></div><div class="char"><div class="portrait">⚔</div><div><h3>THE ASCENDER</h3><small>UNBROKEN</small></div></div><div class="gridStats"><div>HP<b>500</b></div><div>ATTACK<b>50</b></div><div>DEFENSE<b>20</b></div><div>ENERGY<b>100</b></div></div><div class="abilities"><p>01　<b>DEVASTATING STRIKE</b><small>25 ENERGY · 180% DAMAGE</small></p><p>02　<b>STEEL WILL</b><small>30 ENERGY · 50% LESS DAMAGE</small></p><p>03　<b>COUNTER</b><small>40 ENERGY · 250% DAMAGE</small></p></div></section>
-
-<section id="inventory" class="screen"><div class="head"><div><small>COLLECTION</small><h2>INVENTORY</h2></div><strong>01 / 20</strong></div><div class="equipment"><div class="slot active"><small>WEAPON</small><b>☽</b><span>FANG OF THE VOID</span></div><div class="slot "><small>HELMET</small><b>◇</b><span>EMPTY</span></div><div class="slot "><small>ARMOR</small><b>◇</b><span>EMPTY</span></div><div class="slot "><small>GLOVES</small><b>◇</b><span>EMPTY</span></div><div class="slot "><small>BOOTS</small><b>◇</b><span>EMPTY</span></div><div class="slot "><small>AMULET</small><b>◇</b><span>EMPTY</span></div></div></section>
-</main>
-<nav><button onclick="show('home')">⌂<small>HOME</small></button><button onclick="show('map')">◇<small>TOWER</small></button><button onclick="show('character')">♙<small>HERO</small></button><button onclick="show('inventory')">□<small>LOOT</small></button></nav>
-</div><script src="app.js"></script></body></html>
+  <nav class="bottom-nav">
+    <button data-screen="home" class="active"><span>⌂</span><small>HOME</small></button>
+    <button data-screen="tower"><span>♜</span><small>TOWER</small></button>
+    <button data-screen="character"><span>♙</span><small>HERO</small></button>
+    <button data-screen="inventory"><span>◇</span><small>LOOT</small></button>
+  </nav>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
