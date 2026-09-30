@@ -1,27 +1,48 @@
-<!doctype html><html lang="ru"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080a0f"><title>Towerborn — The Last Floor</title><link rel="stylesheet" href="style.css"></head>
-<body><main id="app">
-<section id="home" class="screen active"><div class="brand"><div class="logo">⚔</div><div class="eyebrow">THE LAST FLOOR</div><h1>TOWERBORN</h1><p>Поднимись как можно выше.</p></div>
-<div class="actions"><button class="primary" onclick="startRun()">НАЧАТЬ ЗАБЕГ</button><button onclick="show('character')">ПЕРСОНАЖ</button><button onclick="show('inventory')">ИНВЕНТАРЬ</button></div><div id="user" class="muted"></div></section>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>TOWERBORN — THE LAST FLOOR</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+<header class="top"><div><small>THE LAST FLOOR</small><h1>TOWER<span>BORN</span></h1></div><div class="player">● WARRIOR</div></header>
+<main>
+<section id="home" class="screen active">
+<div class="hero"><div class="tower"></div><div class="heroText"><label>FLOOR 01</label><h2>THE TOWER<br><i>AWAITS.</i></h2><p>Climb higher. Build your legend.<br>Survive the last floor.</p></div></div>
+<div class="stats"><div><b>01</b><small>FLOOR</small></div><div><b>500</b><small>HP</small></div><div><b>50</b><small>ATK</small></div><div><b>20</b><small>DEF</small></div></div>
+<button class="primary" onclick="show('map')">ENTER THE TOWER <b>→</b></button>
+<div class="twobtn"><button onclick="show('character')">CHARACTER</button><button onclick="show('inventory')">INVENTORY</button></div>
+</section>
 
-<section id="map" class="screen"><header><button onclick="show('home')">←</button><div><small>БАШНЯ</small><b>ЭТАЖ <span id="floor">1</span></b></div></header>
-<div class="panel"><h2>Выбери путь</h2><p class="muted">Каждый выбор меняет твой забег.</p><div class="rooms">
-<button onclick="room('fight')">⚔️<b>Бой</b><small>Опасность и награда</small></button>
-<button onclick="room('treasure')">💰<b>Сокровище</b><small>Предмет без боя</small></button>
-<button onclick="room('event')">❓<b>Событие</b><small>Риск или удача</small></button></div></div></section>
+<section id="map" class="screen">
+<div class="head"><div><small>ASCENSION</small><h2>CHOOSE YOUR PATH</h2></div><strong>01 <em>/ 10</em></strong></div>
+<div class="map"><div class="current">01<small>YOU</small></div><div class="line"></div>
+<div class="nodes"><button onclick="combat()"><b>⚔</b>FIGHT<small>Guardian</small></button><button onclick="reward()"><b>◇</b>TREASURE<small>Unknown</small></button><button onclick="eventScreen()"><b>?</b>EVENT<small>Fate</small></button></div>
+<div class="next">02 — 03 — 04 — 05<br><span>— BOSS —</span></div></div>
+<p class="hint">Every choice changes your run. There is no safe path.</p>
+</section>
 
-<section id="battle" class="screen"><header><div><small>ЭТАЖ <span id="bfloor">1</span></small><b>СТРАЖ БАШНИ</b></div><span>♥ <i id="php">500</i></span></header>
-<div class="panel center"><div class="enemy">👹</div><h2>Страж башни</h2><div class="bar"><div id="ehbar"></div></div><small id="ehp">350 / 350 HP</small><div class="intent" id="intent">⚔️ Обычная атака: 35–50</div></div>
-<div class="panel center"><div class="hero">⚔️</div><h2>Воин</h2><div class="bar player"><div id="phbar"></div></div><small id="hp">500 / 500 HP</small><p>Энергия: <b id="energy">100</b>/100</p></div>
-<div id="log" class="log">Выбери действие.</div><div class="combat">
-<button onclick="act('attack')">⚔️ Атака<small>+10 энергии</small></button>
-<button onclick="act('defend')">🛡️ Защита<small>+15 энергии</small></button>
-<button onclick="act('sunder')">💥 Сокрушение<small>25 энергии</small></button>
-<button onclick="act('steel')">🛡️ Стальная воля<small>30 энергии</small></button></div></section>
+<section id="combat" class="screen">
+<div class="combatHead"><button onclick="show('map')">← MAP</button><span>FLOOR 01</span><span>COMBAT</span></div>
+<div class="arena"><div class="intent">INTENT &nbsp; <b id="intent">ATTACK · 45</b></div>
+<div class="enemy"><div class="rune">✦</div><h3>TOWER GUARDIAN</h3><div class="bar"><i id="ehp"></i></div><small><span id="ehpt">350</span> / 350 HP</small></div>
+<div class="vs">VS</div><div class="heroUnit"><div class="sword">⚔</div><h3>WARRIOR</h3><div class="bar"><i id="php"></i></div><small><span id="phpt">500</span> / 500 HP</small></div></div>
+<div class="energy">ENERGY <div><span id="energybar"></span></div><b id="energy">40 / 100</b></div>
+<div class="actions"><button onclick="attack()">ATTACK<small>+10 E</small></button><button onclick="defend()">DEFEND<small>+15 E</small></button><button onclick="skill(90,25,'SUNDER')">SUNDER<small>25 E</small></button><button onclick="skill(0,30,'STEEL WILL')">STEEL WILL<small>30 E</small></button></div>
+<p id="log" class="log">The Guardian watches your every move.</p>
+</section>
 
-<section id="reward" class="screen center"><div class="panel"><div class="logo">✦</div><div class="eyebrow">НАГРАДА</div><h2>Путь продолжается</h2><p id="rewardText" class="muted"></p><button class="primary" onclick="continueRun()">ПРОДОЛЖИТЬ</button></div></section>
+<section id="reward" class="screen center"><div class="symbol">◇</div><small>VICTORY</small><h2>THE GUARDIAN FALLS</h2><p>You found something in the darkness.</p><div class="item"><b>☽</b><div><small>RARE · WEAPON</small><h3>FANG OF THE VOID</h3><p>+15 ATK · +50% damage below 30% HP</p></div></div><button class="primary" onclick="show('map')">CONTINUE ASCENSION <b>→</b></button></section>
 
-<section id="character" class="screen"><header><button onclick="show('home')">←</button><b>ПЕРСОНАЖ</b><span></span></header><div class="panel center"><div class="hero big">⚔️</div><h2>Воин</h2><p>Уровень <b>1</b></p><hr><p>Атака <b>50</b></p><p>Защита <b>20</b></p><p>Макс. HP <b>500</b></p></div></section>
-<section id="inventory" class="screen"><header><button onclick="show('home')">←</button><b>ИНВЕНТАРЬ</b><span></span></header><div class="panel"><div class="item">⚔️ <span><b>Клык Пустоты</b><small>+15 ATK · +50% урона ниже 30% HP</small></span></div><div class="item">🛡️ <span><b>Панцирь Титана</b><small>+20 DEF · защита даёт Counter</small></span></div><div class="item">❔ <span><b>Неизвестный предмет</b><small>Откроется в башне</small></span></div></div></section>
-</main><script src="https://telegram.org/js/telegram-web-app.js"></script><script src="app.js"></script></body></html>
+<section id="event" class="screen center"><div class="symbol">?</div><small>AN UNKNOWN PRESENCE</small><h2>THE WHISPERING DOOR</h2><p>Something behind the door knows your name. Open it?</p><div class="twobtn"><button onclick="reward()">OPEN THE DOOR</button><button onclick="show('map')">WALK AWAY</button></div></section>
+
+<section id="character" class="screen"><div class="head"><div><small>WARRIOR</small><h2>CHARACTER</h2></div><strong>LVL 01</strong></div><div class="char"><div class="portrait">⚔</div><div><h3>THE ASCENDER</h3><small>UNBROKEN</small></div></div><div class="gridStats"><div>HP<b>500</b></div><div>ATTACK<b>50</b></div><div>DEFENSE<b>20</b></div><div>ENERGY<b>100</b></div></div><div class="abilities"><p>01　<b>DEVASTATING STRIKE</b><small>25 ENERGY · 180% DAMAGE</small></p><p>02　<b>STEEL WILL</b><small>30 ENERGY · 50% LESS DAMAGE</small></p><p>03　<b>COUNTER</b><small>40 ENERGY · 250% DAMAGE</small></p></div></section>
+
+<section id="inventory" class="screen"><div class="head"><div><small>COLLECTION</small><h2>INVENTORY</h2></div><strong>01 / 20</strong></div><div class="equipment"><div class="slot active"><small>WEAPON</small><b>☽</b><span>FANG OF THE VOID</span></div><div class="slot "><small>HELMET</small><b>◇</b><span>EMPTY</span></div><div class="slot "><small>ARMOR</small><b>◇</b><span>EMPTY</span></div><div class="slot "><small>GLOVES</small><b>◇</b><span>EMPTY</span></div><div class="slot "><small>BOOTS</small><b>◇</b><span>EMPTY</span></div><div class="slot "><small>AMULET</small><b>◇</b><span>EMPTY</span></div></div></section>
+</main>
+<nav><button onclick="show('home')">⌂<small>HOME</small></button><button onclick="show('map')">◇<small>TOWER</small></button><button onclick="show('character')">♙<small>HERO</small></button><button onclick="show('inventory')">□<small>LOOT</small></button></nav>
+</div><script src="app.js"></script></body></html>
