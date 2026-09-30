@@ -1,30 +1,112 @@
-const app=document.getElementById('screen');
-let screen='home';
-const tg=window.Telegram?.WebApp; tg?.ready(); tg?.expand();
+const tg=window.Telegram?.WebApp; if(tg){tg.ready();tg.expand();}
 
-const player={maxHp:500,hp:500,maxEnergy:100,energy:40,atk:50,def:20,guard:0,defended:false};
-const enemy={name:'THE SENTINEL',maxHp:350,hp:350,atk:45,intent:'heavy',stunned:0};
-let turn=1, busy=false, combatOver=false;
-const nav=document.querySelectorAll('[data-screen]');
-nav.forEach(b=>b.addEventListener('click',()=>{screen=b.dataset.screen;if(screen==='combat')resetCombat();render()}));
-function resetCombat(){player.hp=500;player.energy=40;player.guard=0;player.defended=false;enemy.hp=350;enemy.intent='heavy';enemy.stunned=0;turn=1;busy=false;combatOver=false}
-function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
-function toast(t,kind='normal'){const e=document.createElement('div');e.className='toast '+kind;e.innerHTML=t;document.body.appendChild(e);setTimeout(()=>e.remove(),1200)}
-function pct(v,m){return Math.max(0,Math.min(100,v/m*100))}
-function icon(type,cls=''){const icons={
- hero:`<svg class="${cls}" viewBox="0 0 120 150"><path d="M30 52V31C30 12 43 4 60 4s30 8 30 27v21l-10 18H40z"/><path d="M39 35h42M46 54h28M42 70l-13 13 9 63h44l9-63-13-13"/><path d="M29 87l-12 54h25M91 87l12 54H78"/></svg>`,
- enemy:`<svg class="${cls}" viewBox="0 0 120 150"><path d="M31 45L17 20l28 12c8-13 22-19 30-19s22 6 30 19l28-12-14 25c2 10-1 21-7 29l11 70H15l11-70c-6-8-9-19-7-29z"/><path d="M38 61h14M68 61h14M45 87h30l-7 12H52z"/><path d="M28 111h64"/></svg>`,
- sword:`<svg class="${cls}" viewBox="0 0 100 100"><path d="M63 8l29 29-42 42-18-18z"/><path d="M20 80l-10 10M31 69l-11 11M28 86l-14-14"/><path d="M48 42l10 10"/></svg>`,
- flame:`<svg class="${cls}" viewBox="0 0 100 100"><path d="M52 8c7 19-6 25 10 39 6 5 9 12 8 20-2 15-14 25-31 25-20 0-31-14-28-31 3-16 18-22 24-42 9 7 13 14 12 22 8-9 8-20 5-33z"/></svg>`,
- shield:`<svg class="${cls}" viewBox="0 0 100 100"><path d="M50 7l33 12v25c0 24-14 39-33 49C31 83 17 68 17 44V19z"/><path d="M50 20v58M30 40h40"/></svg>`,
- gem:`<svg class="${cls}" viewBox="0 0 100 100"><path d="M18 34l16-20h32l16 20-32 47z"/><path d="M18 34h64M34 14l16 67M66 14L50 81"/></svg>`};return icons[type]||icons.gem}
-function render(){document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===screen));if(screen==='home')home();if(screen==='tower')tower();if(screen==='character')character();if(screen==='inventory')inventory();if(screen==='combat')combat();if(screen==='reward')reward()}
-function home(){app.innerHTML=`<section class="home-hero"><div class="stars"></div><div class="moon"></div><div class="tower-art"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-copy"><div class="eyebrow">CHAPTER I · THE ASCENSION</div><h1>THE LAST<br><em>FLOOR</em></h1><p>Something waits above the clouds. Enter the tower, forge a build, and survive the climb.</p><div class="hero-actions"><button class="btn primary" onclick="screen='tower';render()">ENTER THE TOWER <span>→</span></button><button class="btn ghost" onclick="screen='character';render()">VIEW HERO</button></div></div><div class="home-bottom"><div><small>CURRENT ASCENSION</small><b>01 / 50</b></div><div><small>BEST FLOOR</small><b>00</b></div><div><small>RELICS</small><b>01</b></div></div></section><section class="omen"><div class="section-head"><div><div class="eyebrow">THE FIRST OMEN</div><h2>YOUR RUN BEGINS</h2></div><span>WARRIOR · LVL 01</span></div><div class="omen-grid"><article><div class="card-art">${icon('hero')}</div><div><small>ASCENDER</small><h3>THE UNBROKEN</h3><p>Heavy attacks, perfect defense, brutal counters.</p></div></article><article><div class="card-art gold">${icon('sword')}</div><div><small>RELIC</small><h3>FANG OF THE VOID</h3><p>+15 ATK · +50% damage below 30% HP.</p></div></article><article><div class="card-art purple">${icon('gem')}</div><div><small>THE TOWER</small><h3>50 FLOORS</h3><p>Choose your path. Every tenth floor hides a boss.</p></div></article></div></section>`}
-function tower(){app.innerHTML=`<div class="page-head"><div><div class="eyebrow">ASCENSION · LOWER WARD</div><h1>CHOOSE YOUR PATH</h1></div><div class="floor-count">FLOOR <b>01</b><small>/ 50</small></div></div><section class="tower-map"><div class="map-glow"></div><div class="map-title"><span>NO SAFE PATH</span><small>THE TOWER REMEMBERS EVERY CHOICE</small></div><div class="route"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 7L25 30L43 55L50 88M50 7L75 30L57 55L50 88M25 30L75 30M43 55L57 55"/></svg><button class="node current n1" onclick="screen='combat';resetCombat();render()"><span class="node-icon">${icon('sword')}</span><b>FIGHT</b><small>THE SENTINEL</small></button><button class="node treasure n2" onclick="toast('A locked chest waits in the dark.')"><span class="node-icon">${icon('gem')}</span><b>RELIC</b><small>UNKNOWN</small></button><button class="node event n3" onclick="toast('Something whispers behind the door…')"><span class="node-icon">✦</span><b>EVENT</b><small>THE WHISPER</small></button><button class="node fight n4" onclick="toast('This path is not yet unlocked.')"><span class="node-icon">${icon('sword')}</span><b>ELITE</b><small>SEALED</small></button><button class="node treasure n5" onclick="toast('The chest is bound by old magic.')"><span class="node-icon">${icon('shield')}</span><b>SHRINE</b><small>SEALED</small></button><button class="node boss n6" onclick="toast('BOSS · FLOOR 10')"><span class="node-icon">♜</span><b>BOSS</b><small>FLOOR 10</small></button></div></section><div class="tip"><b>READ THE TOWER.</b> Enemy intent, relics and risk are part of the run. There is no safe path.</div>`}
-function combat(){const p=player,e=enemy;app.innerHTML=`<div class="page-head combat-head"><div><div class="eyebrow">FLOOR 01 · ENCOUNTER</div><h1>THE SENTINEL</h1></div><div class="turn">TURN <b>${turn}</b></div></div><section class="battle"><div class="combat-card player-card"><div class="portrait hero-portrait">${icon('hero')}</div><div class="unit-name"><span>ASCENDER</span><b>THE UNBROKEN</b></div><div class="resource"><div><span>HP</span><b>${p.hp} / ${p.maxHp}</b></div><div class="bar"><i class="hp" style="width:${pct(p.hp,p.maxHp)}%"></i></div></div><div class="resource"><div><span>ENERGY</span><b>${p.energy} / ${p.maxEnergy}</b></div><div class="bar"><i class="energy" style="width:${pct(p.energy,p.maxEnergy)}%"></i></div></div><div class="mini-stats"><span>ATK <b>${p.atk}</b></span><span>DEF <b>${p.def}</b></span></div></div><div class="battle-center"><div class="intent-card ${e.intent}"><small>ENEMY INTENT</small><strong>${e.stunned?'STUNNED':e.intent==='heavy'?'⚠ HEAVY ATTACK':'⚔ ATTACK'}</strong><span>${e.stunned?'Action cancelled':e.intent==='heavy'?'80–110 DAMAGE · DEFEND TO SURVIVE':'35–50 DAMAGE'}</span></div><div class="vs-line"><span></span><b>VS</b><span></span></div><div class="combat-log">${combatOver? (e.hp<=0?'THE SENTINEL FALLS.':'THE TOWER CLAIMS YOU.'):'The stone guardian watches every move.'}</div><div class="actions ${busy||combatOver?'disabled':''}"><button class="action" ${busy||combatOver?'disabled':''} onclick="act('attack')"><span>${icon('sword')}</span><b>ATTACK</b><small>+10 ENERGY · ${p.atk} DMG</small></button><button class="action" ${busy||combatOver?'disabled':''} onclick="act('defend')"><span>${icon('shield')}</span><b>DEFEND</b><small>50% LESS NEXT HIT · +15 ENERGY</small></button><button class="action" ${busy||combatOver||p.energy<25?'disabled':''} onclick="act('sunder')"><span>${icon('flame')}</span><b>SUNDER</b><small>25 ENERGY · 90 DMG</small></button><button class="action" ${busy||combatOver||p.energy<30?'disabled':''} onclick="act('steel')"><span>✦</span><b>STEEL WILL</b><small>30 ENERGY · 50% LESS DAMAGE</small></button></div></div><div class="combat-card enemy-card"><div class="portrait enemy-portrait">${icon('enemy')}</div><div class="unit-name"><span>TOWER GUARDIAN</span><b>THE SENTINEL</b></div><div class="resource"><div><span>HP</span><b>${e.hp} / ${e.maxHp}</b></div><div class="bar"><i class="hp enemyhp" style="width:${pct(e.hp,e.maxHp)}%"></i></div></div><div class="enemy-note"><span class="danger-dot"></span><div><b>TELEGRAPHS ATTACKS</b><small>Watch the intent above.</small></div></div><div class="runes">◈ · ◈ · ◈</div></div></section>`}
-function act(type){if(busy||combatOver)return;busy=true;let dmg=0,msg='';if(type==='attack'){dmg=player.atk;player.energy=Math.min(100,player.energy+10);msg=`You strike for <b>${dmg}</b>.`;}if(type==='defend'){player.guard=0.5;player.defended=true;player.energy=Math.min(100,player.energy+15);msg='<b>Guard raised.</b> Incoming damage reduced.';}if(type==='sunder'){player.energy-=25;dmg=90;msg=`Sunder tears through stone for <b>${dmg}</b>.`;}if(type==='steel'){player.energy-=30;player.guard=0.5;msg='<b>Steel Will.</b> You brace for impact.';}if(dmg){enemy.hp=Math.max(0,enemy.hp-dmg)}toast(msg,'good');render();if(enemy.hp<=0){combatOver=true;busy=false;setTimeout(()=>{screen='reward';render()},650);return}setTimeout(enemyTurn,700)}
-function enemyTurn(){let dmg=enemy.intent==='heavy'?95:42;if(player.guard){dmg=Math.round(dmg*.5);player.guard=0}player.hp=Math.max(0,player.hp-Math.max(0,dmg-player.def));player.energy=Math.min(100,player.energy+0);toast(`The Sentinel hits for <b>${Math.max(0,dmg-player.def)}</b>.`,'danger');if(player.hp<=0){combatOver=true;busy=false;setTimeout(()=>render(),300);return}enemy.intent=enemy.intent==='heavy'?'normal':'heavy';turn++;busy=false;render()}
-function reward(){app.innerHTML=`<section class="reward-screen"><div class="reward-rune">✦</div><div class="eyebrow">ENCOUNTER CLEARED</div><h1>THE TOWER YIELDS</h1><p>The Sentinel leaves a relic in the dust.</p><div class="loot-card"><div class="loot-art">${icon('sword')}</div><span>RARE WEAPON</span><h2>FANG OF THE VOID</h2><p>+15 ATK<br>Deals +50% damage while below 30% HP.</p><button class="btn primary" onclick="screen='tower';render()">CONTINUE ASCENSION →</button></div></section>`}
-function character(){app.innerHTML=`<div class="page-head"><div><div class="eyebrow">ASCENDER PROFILE</div><h1>THE WARRIOR</h1></div><div class="floor-count">LVL <b>01</b></div></div><section class="character-layout"><div class="character-art"><div class="sigil">I</div><div class="big-hero">${icon('hero')}</div><div class="character-name"><small>THE ASCENDER</small><h2>THE UNBROKEN</h2><span>WARRIOR</span></div></div><div class="character-info"><div class="stat-row"><div><small>HP</small><b>500</b></div><div><small>ATTACK</small><b>50</b></div><div><small>DEFENSE</small><b>20</b></div><div><small>ENERGY</small><b>100</b></div></div><div class="panel-title"><span>ABILITIES</span><small>3 UNLOCKED</small></div><div class="skill"><strong>01</strong><div><h3>DEVASTATING STRIKE</h3><p>25 ENERGY · 180% DAMAGE</p></div></div><div class="skill"><strong>02</strong><div><h3>STEEL WILL</h3><p>30 ENERGY · 50% LESS DAMAGE FOR 2 TURNS</p></div></div><div class="skill"><strong>03</strong><div><h3>COUNTER</h3><p>40 ENERGY · 250% DAMAGE AFTER DEFEND</p></div></div></div></section>`}
-function inventory(){const items=[['sword','FANG OF THE VOID','RARE','+15 ATK · LOW HP BONUS'],['shield','TITAN SHELL','EPIC','+20 DEF · DEFENSE BUILDS COUNTER'],['flame','HEART OF FLAME','RARE','15% CHANCE TO BURN'],['gem','ICE CRYSTAL','RARE','EVERY THIRD ATTACK FREEZES']];app.innerHTML=`<div class="page-head"><div><div class="eyebrow">RELIC VAULT</div><h1>INVENTORY</h1></div><div class="floor-count"><b>01</b><small>/ 20</small></div></div><section class="inventory-layout"><div class="equipment-panel"><div class="panel-title"><span>EQUIPMENT</span><small>1 / 6 SLOTS</small></div><div class="equip-grid"><div class="equip filled"><span>WEAPON</span><div class="equip-icon">${icon('sword')}</div><b>FANG</b></div><div class="equip"><span>HELMET</span><div class="empty-icon">+</div><b>EMPTY</b></div><div class="equip"><span>ARMOR</span><div class="empty-icon">+</div><b>EMPTY</b></div><div class="equip"><span>GLOVES</span><div class="empty-icon">+</div><b>EMPTY</b></div><div class="equip"><span>BOOTS</span><div class="empty-icon">+</div><b>EMPTY</b></div><div class="equip"><span>AMULET</span><div class="empty-icon">+</div><b>EMPTY</b></div></div></div><div class="relic-panel"><div class="panel-title"><span>FOUND RELICS</span><small>4 ITEMS</small></div><div class="item-list">${items.map((it,i)=>`<article class="item-card"><div class="item-art ${i===1?'purple':''}">${icon(it[0])}</div><div><small>${it[2]}</small><h3>${it[1]}</h3><p>${it[3]}</p></div></article>`).join('')}</div></div></section>`}
-render();
+const state={
+ screen:"home", playerHp:500, enemyHp:350, energy:40, combo:0, guard:false, steel:false,
+ busy:false, enemyIntent:"HEAVY STRIKE", round:1, gold:128
+};
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+
+function showScreen(id){
+  state.screen=id;
+  $$(".screen").forEach(x=>x.classList.toggle("active",x.id===id));
+  window.scrollTo(0,0);
+  if(id==="combat") resetCombat();
+}
+$$("[data-screen]").forEach(b=>b.addEventListener("click",()=>showScreen(b.dataset.screen)));
+
+function updateBars(){
+ $("#playerHp").textContent=Math.max(0,state.playerHp);
+ $("#enemyHp").textContent=Math.max(0,state.enemyHp);
+ $("#playerHpBar").style.width=Math.max(0,state.playerHp/500*100)+"%";
+ $("#enemyHpBar").style.width=Math.max(0,state.enemyHp/350*100)+"%";
+ $("#energy").textContent=state.energy;
+ $("#energyBar").style.width=state.energy+"%";
+ $("#combo").textContent=state.combo;
+}
+
+function resetCombat(){
+ state.playerHp=500;state.enemyHp=350;state.energy=40;state.combo=0;state.guard=false;state.steel=false;state.busy=false;state.round=1;
+ $("#intent").innerHTML="HEAVY STRIKE <span>!</span>";
+ $("#roundText").textContent="READY"; updateBars(); enableActions(true);
+}
+
+function enableActions(on){$$(".action").forEach(b=>b.disabled=!on);}
+
+function message(t){
+ const el=$("#battleMessage");el.textContent=t;el.classList.add("show");
+ clearTimeout(message.t);message.t=setTimeout(()=>el.classList.remove("show"),650);
+}
+function fx(type){
+ const layer=$("#fxLayer");layer.innerHTML="";
+ const e=document.createElement("div");e.className=type==="slash"?"slash":"";
+ if(type==="slash") layer.appendChild(e);
+ const target=type==="slash"?$(".enemy-art"):$(".player-art");
+ target.classList.remove("hit","shake");void target.offsetWidth;target.classList.add(type==="slash"?"hit":"shake");
+}
+
+function chooseAction(action){
+ if(state.busy || state.playerHp<=0 || state.enemyHp<=0) return;
+ state.busy=true;enableActions(false);
+ $("#roundText").textContent="YOUR MOVE";
+ const countdown=$("#countdown");countdown.classList.remove("hidden");countdown.textContent="0.5";
+ let n=5;
+ const tick=setInterval(()=>{n--;countdown.textContent=(n/10).toFixed(1);if(n<=0){clearInterval(tick);countdown.classList.add("hidden");performPlayer(action)}},100);
+}
+function performPlayer(action){
+ let dmg=0;
+ if(action==="attack"){dmg=55;state.energy=Math.min(100,state.energy+10);fx("slash");message("STRIKE · "+dmg+" DAMAGE");}
+ if(action==="block"){state.guard=true;state.energy=Math.min(100,state.energy+15);message("GUARD READY");}
+ if(action==="ability1"){
+   if(state.energy<25){message("NOT ENOUGH RAGE");state.busy=false;enableActions(true);return}
+   state.energy-=25;dmg=90;fx("slash");message("SUNDER · "+dmg+" DAMAGE");
+ }
+ if(action==="ability2"){
+   if(state.energy<30){message("NOT ENOUGH RAGE");state.busy=false;enableActions(true);return}
+   state.energy-=30;state.steel=true;message("STEEL WILL · GUARD");
+ }
+ if(dmg){state.enemyHp-=dmg;state.combo++;}
+ updateBars();
+ if(state.enemyHp<=0){winCombat();return}
+ setTimeout(enemyTurn,430);
+}
+
+function enemyTurn(){
+ $("#roundText").textContent="ENEMY MOVE";
+ const intents=["QUICK STRIKE","HEAVY STRIKE","QUICK STRIKE","FEINT"];
+ const intent=intents[Math.floor(Math.random()*intents.length)];
+ let dmg=intent==="HEAVY STRIKE"?82:intent==="FEINT"?38:50;
+ if(state.guard||state.steel){dmg=Math.floor(dmg*(state.steel?.35:.25));state.guard=false;state.steel=false;message("BLOCKED · "+dmg+" DAMAGE");}
+ else {message("HIT · "+dmg+" DAMAGE");fx("player");}
+ state.playerHp-=dmg;
+ state.energy=Math.max(0,state.energy);
+ state.round++;
+ updateBars();
+ if(state.playerHp<=0){loseCombat();return}
+ $("#intent").innerHTML=intent+' <span>!</span>';
+ state.busy=false;enableActions(true);$("#roundText").textContent="YOUR MOVE";
+}
+
+function winCombat(){
+ state.busy=true;enableActions(false);$("#roundText").textContent="VICTORY";
+ state.gold+=25;$("#gold").textContent=state.gold;
+ message("GUARDIAN DEFEATED");
+ setTimeout(()=>showScreen("reward"),900);
+}
+function loseCombat(){
+ state.busy=true;enableActions(false);$("#roundText").textContent="FALLEN";
+ message("THE TOWER CLAIMS YOU");
+ setTimeout(()=>showScreen("map"),1100);
+}
+
+$$(".action").forEach(b=>{
+ b.addEventListener("click",()=>chooseAction(b.dataset.action));
+});
+document.addEventListener("keydown",e=>{
+ if(state.screen!=="combat")return;
+ if(e.repeat)return;
+ if(e.code==="KeyE")chooseAction("ability1");
+ if(e.code==="KeyR")chooseAction("ability2");
+ if(e.code==="Space")chooseAction("block");
+});
+updateBars();

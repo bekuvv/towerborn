@@ -2,26 +2,116 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07070a">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Towerborn — The Last Floor</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-<div class="noise"></div><div class="vignette"></div>
 <div id="app">
-<header class="topbar">
-  <div class="brand"><div class="brand-rune">T</div><div><b>TOWERBORN</b><small>THE LAST FLOOR</small></div></div>
-  <div class="top-actions"><button class="icon-btn" data-screen="character" aria-label="Hero">♜</button><button class="icon-btn" data-screen="inventory" aria-label="Inventory">◇</button></div>
-</header>
-<main id="screen"></main>
-<nav class="bottom-nav">
-  <button data-screen="home" class="active"><span>⌂</span><small>HALL</small></button>
-  <button data-screen="tower"><span>♜</span><small>TOWER</small></button>
-  <button data-screen="character"><span>♙</span><small>HERO</small></button>
-  <button data-screen="inventory"><span>◇</span><small>RELICS</small></button>
-</nav>
+  <div class="grain"></div>
+  <header class="topbar">
+    <div class="brand"><span class="sigil">✦</span><div><b>TOWERBORN</b><small>THE LAST FLOOR</small></div></div>
+    <div class="topstats"><span>✦ <b id="gold">128</b></span><span>◆ <b>F1</b></span></div>
+  </header>
+
+  <main>
+    <section id="home" class="screen active">
+      <div class="hero-art">
+        <div class="moon"></div>
+        <div class="tower-silhouette"></div>
+        <div class="fog"></div>
+        <div class="hero-figure"><div class="helmet"></div><div class="body"></div><div class="sword"></div></div>
+      </div>
+      <div class="home-copy">
+        <p class="eyebrow">THE ASCENT BEGINS</p>
+        <h1>THE LAST<br><em>FLOOR</em></h1>
+        <p class="muted">Climb. Adapt. Survive.</p>
+        <button class="primary giant" data-screen="map">ENTER THE TOWER <span>→</span></button>
+      </div>
+      <div class="home-cards">
+        <div><span>RUN</span><b>01</b></div><div><span>RECORD</span><b>—</b></div><div><span>RELICS</span><b>0</b></div>
+      </div>
+    </section>
+
+    <section id="map" class="screen">
+      <div class="section-head"><div><p class="eyebrow">ASCENT</p><h2>THE TOWER</h2></div><button class="icon-btn" data-screen="home">×</button></div>
+      <div class="map-hero"><span>FLOOR 01</span><b>THE LOWER HALLS</b><small>Choose your path.</small></div>
+      <div class="path">
+        <div class="node start">01</div>
+        <div class="branch">
+          <button class="map-node fight" data-screen="combat"><span class="node-icon">⚔</span><b>FIGHT</b><small>Guardian</small></button>
+          <button class="map-node treasure" data-screen="reward"><span class="node-icon">◆</span><b>TREASURE</b><small>Relic</small></button>
+          <button class="map-node event" data-screen="event"><span class="node-icon">☽</span><b>EVENT</b><small>Whispering Door</small></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="combat" class="screen combat-screen">
+      <div class="combat-top">
+        <button class="icon-btn" data-screen="map">×</button>
+        <div class="floor-tag">FLOOR 01 · DUEL</div>
+        <span class="combo">COMBO <b id="combo">0</b></span>
+      </div>
+
+      <div class="arena">
+        <div class="enemy-zone">
+          <div class="intent" id="intent">HEAVY STRIKE <span>!</span></div>
+          <div class="enemy-art"><div class="enemy-horn a"></div><div class="enemy-horn b"></div><div class="enemy-head"></div><div class="enemy-armor"></div><div class="enemy-weapon"></div></div>
+          <div class="nameplate"><b>TOWER GUARDIAN</b><span>LVL 1 · ABYSSAL KNIGHT</span></div>
+          <div class="bar"><i id="enemyHpBar"></i></div><div class="hptext"><span id="enemyHp">350</span> / 350 HP</div>
+        </div>
+
+        <div class="versus"><span id="roundText">READY</span><b>VS</b></div>
+
+        <div class="player-zone">
+          <div class="player-art"><div class="cape"></div><div class="p-head"></div><div class="p-body"></div><div class="p-sword"></div></div>
+          <div class="nameplate"><b>WARRIOR</b><span>LVL 1 · THE UNBROKEN</span></div>
+          <div class="bar player"><i id="playerHpBar"></i></div><div class="hptext"><span id="playerHp">500</span> / 500 HP</div>
+        </div>
+
+        <div id="fxLayer"></div>
+        <div id="countdown" class="countdown hidden">0.5</div>
+        <div id="battleMessage" class="battle-message">Choose an action</div>
+      </div>
+
+      <div class="combat-hud">
+        <div class="energy"><div class="energy-head"><span>RAGE</span><b id="energy">40</b>/100</div><div class="energy-bar"><i id="energyBar"></i></div></div>
+        <div class="actions">
+          <button class="action" data-action="attack"><kbd>LMB</kbd><span class="action-icon">⚔</span><b>STRIKE</b><small>Quick hit</small></button>
+          <button class="action" data-action="block"><kbd>RMB</kbd><span class="action-icon">◈</span><b>GUARD</b><small>Block next hit</small></button>
+          <button class="action" data-action="ability1"><kbd>E</kbd><span class="action-icon">✦</span><b>SUNDER</b><small>25 rage · 90 dmg</small></button>
+          <button class="action" data-action="ability2"><kbd>R</kbd><span class="action-icon">☄</span><b>STEEL WILL</b><small>30 rage · Guard</small></button>
+        </div>
+        <div class="combat-tip">YOUR WINDOW <span>0.5 SEC</span> · READ THE ENEMY · ACT FAST</div>
+      </div>
+    </section>
+
+    <section id="reward" class="screen reward-screen">
+      <div class="reward-stage">
+        <div class="reward-rays"></div><div class="reward-pedestal"></div>
+        <div class="relic large" id="rewardRelic">◆</div>
+        <p class="eyebrow" id="rewardRarity">RARE RELIC</p>
+        <h2 id="rewardName">FANG OF THE VOID</h2>
+        <p id="rewardDesc">+15 ATK · Deal 50% more damage below 30% HP.</p>
+        <button class="primary" data-screen="map">CLAIM RELIC</button>
+      </div>
+    </section>
+
+    <section id="event" class="screen event-screen">
+      <div class="event-door"><div class="door-glow"></div><div class="door"></div></div>
+      <p class="eyebrow">UNKNOWN PRESENCE</p><h2>THE WHISPERING DOOR</h2>
+      <p class="muted">Something behind it knows your name.</p>
+      <div class="event-actions"><button class="primary" data-screen="reward">OPEN THE DOOR</button><button class="secondary" data-screen="map">WALK AWAY</button></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button data-screen="home">⌂<span>HOME</span></button><button data-screen="map">♜<span>TOWER</span></button><button data-screen="combat">⚔<span>DUEL</span></button><button data-screen="reward">◆<span>RELICS</span></button>
+  </nav>
 </div>
 <script src="app.js"></script>
 </body>
