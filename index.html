@@ -3,27 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#090a0f">
+<meta name="theme-color" content="#07070a">
 <title>Towerborn — The Last Floor</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="grain"></div>
+<div class="noise"></div><div class="vignette"></div>
 <div id="app">
-  <header class="topbar">
-    <div class="brand"><span class="brand-mark">✦</span><div><b>TOWERBORN</b><small>THE LAST FLOOR</small></div></div>
-    <div class="top-actions"><button class="icon-btn" data-screen="character">♙</button><button class="icon-btn" data-screen="inventory">◇</button></div>
-  </header>
-
-  <main id="screen"></main>
-
-  <nav class="bottom-nav">
-    <button data-screen="home" class="active"><span>⌂</span><small>HOME</small></button>
-    <button data-screen="tower"><span>♜</span><small>TOWER</small></button>
-    <button data-screen="character"><span>♙</span><small>HERO</small></button>
-    <button data-screen="inventory"><span>◇</span><small>LOOT</small></button>
-  </nav>
+<header class="topbar">
+  <div class="brand"><div class="brand-rune">T</div><div><b>TOWERBORN</b><small>THE LAST FLOOR</small></div></div>
+  <div class="top-actions"><button class="icon-btn" data-screen="character" aria-label="Hero">♜</button><button class="icon-btn" data-screen="inventory" aria-label="Inventory">◇</button></div>
+</header>
+<main id="screen"></main>
+<nav class="bottom-nav">
+  <button data-screen="home" class="active"><span>⌂</span><small>HALL</small></button>
+  <button data-screen="tower"><span>♜</span><small>TOWER</small></button>
+  <button data-screen="character"><span>♙</span><small>HERO</small></button>
+  <button data-screen="inventory"><span>◇</span><small>RELICS</small></button>
+</nav>
 </div>
 <script src="app.js"></script>
 </body>
